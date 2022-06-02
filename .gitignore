@@ -3,3 +3,4 @@ assets/
 build/
 dist/
 *.egg-info
+bin.py

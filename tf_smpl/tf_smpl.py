@@ -43,13 +43,8 @@ class SMPL(tf.keras.layers.Layer):
       self.blend_skinning = BlendSkinning(v_weights=params["weights"], dtype=self.dtype)
       self.vertex_normals = VertexNormals(dtype=self.dtype)
 
-  def call(self, shapes, poses=None, trans=False):
+  def call(self, shapes, poses=None, trans=False, includes=None):
     prefix_shape  = shapes.shape[:-1]
-    tensor_dict = {
-      "shapes": shapes,
-      "poses": poses,
-      "trans": trans
-    }
 
     shapes = tf.reshape(shapes, [-1, 10])
     v_shaped = self.v_template + tf.reshape(
@@ -99,33 +94,40 @@ class SMPL(tf.keras.layers.Layer):
       shape=prefix_shape + v_body.shape[1:],
       name="v_body"
     )
-    tensor_dict["v_shaped"] = tf.reshape(
-      tensor=v_shaped,
-      shape=prefix_shape + v_shaped.shape[1:],
-      name="v_shaped"
-    )
-    tensor_dict["v_posed"] = tf.reshape(
-      tensor=v_posed,
-      shape=prefix_shape + v_posed.shape[1:],
-      name="v_posed"
-    )
-    tensor_dict["J_rotations"] = tf.reshape(
-      tensor=J_rotations,
-      shape=prefix_shape + J_rotations.shape[1:],
-      name="J_rotations"
-    )
-    tensor_dict["J_locations"] = tf.reshape(
-      tensor=J_locations,
-      shape=prefix_shape + J_locations.shape[1:],
-      name="J_rotations"
-    )
-    tensor_dict["J_transforms"] = tf.reshape(
-      tensor=J_transforms,
-      shape=prefix_shape + J_transforms.shape[1:],
-      name="J_rotations"
-    )
-
-    return v_body, tensor_dict
+    if includes is not None:
+      tensor_dict = {}
+      if "v_shaped" in includes:
+        tensor_dict["v_shaped"] = tf.reshape(
+          tensor=v_shaped,
+          shape=prefix_shape + v_shaped.shape[1:],
+          name="v_shaped"
+        )
+      if "v_posed" in includes:
+        tensor_dict["v_posed"] = tf.reshape(
+          tensor=v_posed,
+          shape=prefix_shape + v_posed.shape[1:],
+          name="v_posed"
+        )
+      if "J_rotations" in includes:
+        tensor_dict["J_rotations"] = tf.reshape(
+          tensor=J_rotations,
+          shape=prefix_shape + J_rotations.shape[1:],
+          name="J_rotations"
+        )
+      if "J_locations" in includes:
+        tensor_dict["J_locations"] = tf.reshape(
+          tensor=J_locations,
+          shape=prefix_shape + J_locations.shape[1:],
+          name="J_locations"
+        )
+      if "J_transforms" in includes:
+        tensor_dict["J_transforms"] = tf.reshape(
+          tensor=J_transforms,
+          shape=prefix_shape + J_transforms.shape[1:],
+          name="J_transforms"
+        )
+      return v_body, tensor_dict
+    return v_body
 
   def normals(self, v_body):
     prefix_shape  = v_body.shape[:-2]

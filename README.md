@@ -3,7 +3,7 @@ This repository contains the code to easy use [SMPL](https://files.is.tue.mpg.de
 
 ## Installation
 ```
-$ pip install git+https://github.com/opendeeple/tf_smpl.git
+$ pip install git+https://github.com/opendeeple/tf-smpl.git
 ```
 
 ## Download SMPL model

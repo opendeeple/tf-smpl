@@ -10,7 +10,11 @@ class BlendSkinning(tf.keras.layers.Layer):
       dtype=self.dtype
     )
 
-  def call(self, vertices, joint_rotations):
+  def call(self, vertices, J_rotations):
+    prefix_shape = vertices.shape[:-2]
+    vertices = tf.reshape(vertices, shape=[-1, vertices.shape[-2], 3])
+    J_rotations = tf.reshape(J_rotations, shape=[-1, *J_rotations.shape[-3:]])
+
     batch_size = tf.shape(vertices)[0]
     num_joints = self.v_weights.shape[-1]
     num_vertices = vertices.shape[-2]
@@ -20,7 +24,7 @@ class BlendSkinning(tf.keras.layers.Layer):
       W = tf.tile(tf.convert_to_tensor(self.v_weights), [batch_size, 1])
       W = tf.reshape(W, [batch_size, self.v_weights.shape[-2], num_joints])
 
-    A = tf.reshape(joint_rotations, (-1, num_joints, 16))
+    A = tf.reshape(J_rotations, (-1, num_joints, 16))
     T = tf.matmul(W, A)
     T = tf.reshape(T, (-1, num_vertices, 4, 4))
 
@@ -29,4 +33,8 @@ class BlendSkinning(tf.keras.layers.Layer):
     skinned_homo = tf.matmul(T, tf.expand_dims(vertices_homo, -1))
     skinned_vertices = skinned_homo[:, :, :3, 0]
 
-    return skinned_vertices
+    return tf.reshape(
+      tensor=skinned_vertices,
+      shape=prefix_shape + skinned_vertices.shape[1:],
+      name="v_skinned"
+    )
