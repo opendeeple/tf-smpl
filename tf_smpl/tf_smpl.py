@@ -142,3 +142,16 @@ class SMPL(tf.keras.layers.Layer):
       shape=prefix_shape + v_body.shape[1:],
       name="v_normals"
     )
+
+  def neighbours(self, v_body, v_outfit):
+    from scipy.spatial import cKDTree
+    def neighbours(v_body, v_outfit):
+      tree = cKDTree(v_body.numpy())
+      return tree.query(v_outfit.numpy(), n_jobs=-1)[1]
+
+    return tf.map_fn(
+      fn=lambda inputs: tf.py_function(func=neighbours, inp=inputs, Tout=tf.int32), 
+      elems=(v_body, v_outfit),
+      fn_output_signature=tf.int32,
+      parallel_iterations=v_body.shape[0]
+    )

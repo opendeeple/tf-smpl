@@ -4,8 +4,8 @@ from tensorflow import keras
 class BlendSkinning(tf.keras.layers.Layer):
   def __init__(self, v_weights, **kwargs):
     super(BlendSkinning, self).__init__(**kwargs)
-    self.v_weights = tf.convert_to_tensor(
-      value=v_weights,
+    self.v_weights = tf.Variable(
+      initial_value=v_weights,
       name="v_weights",
       dtype=self.dtype
     )
