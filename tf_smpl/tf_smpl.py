@@ -143,6 +143,7 @@ class SMPL(tf.keras.layers.Layer):
       name="v_normals"
     )
 
+  @tf.function
   def neighbours(self, v_body, v_outfit):
     from scipy.spatial import cKDTree
     def neighbours(v_body, v_outfit):
