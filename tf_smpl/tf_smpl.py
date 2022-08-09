@@ -148,7 +148,7 @@ class SMPL(tf.keras.layers.Layer):
     from scipy.spatial import cKDTree
     def neighbours(v_body, v_outfit):
       tree = cKDTree(v_body.numpy())
-      return tree.query(v_outfit.numpy(), n_jobs=-1)[1]
+      return tree.query(v_outfit.numpy(), workers=-1)[1]
 
     return tf.map_fn(
       fn=lambda inputs: tf.py_function(func=neighbours, inp=inputs, Tout=tf.int32), 
