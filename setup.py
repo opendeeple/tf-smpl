@@ -9,4 +9,9 @@ setuptools.setup(
   author_email="opendeeple@gmail.com",
   packages = setuptools.find_packages(),
   install_requires = ["tensorflow"],
+  entry_points = {
+    "console_scripts": [
+      "smpl=tf_smpl.bin:main"
+    ]
+  }
 )

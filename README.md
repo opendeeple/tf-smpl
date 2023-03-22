@@ -11,6 +11,11 @@ $ pip install git+https://github.com/opendeeple/tf-smpl.git
 - Download SMPL version 1.0.0 for Python 2.7 (10 shape PCs)
 - Extract SMPL_python_v.1.0.0.zip
 
+## Run
+```
+$ smpl --config configs/example.conf --motion motions\*.npz
+```
+
 ## Usage
 ```py
 import tensorflow as tf

@@ -1,6 +1,6 @@
 __pycache__
-assets/
+assets/poses
+assets/SMPL
 build/
 dist/
 *.egg-info
-bin.py
